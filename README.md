@@ -1,6 +1,6 @@
-# beat-me
+# checkmate
 
-beat-me is a neural-network chess engine written in Python.
+checkmate is a neural-network chess engine written in Python.
 
 ## How it works?
 * Tree Search to predict the moves that should be taken by the policy to reach the final winning solution.
