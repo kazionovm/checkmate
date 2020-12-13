@@ -1,6 +1,7 @@
 # checkmate
 
-checkmate is a neural-network chess engine written in Python.
+checkmate is a neural-network chess engine written in Python.  
+**Gameplay demonstration** - https://www.dailymotion.com/video/x7y1z8o
 
 ## How it works?
 * Tree Search to predict the moves that should be taken by the policy to reach the final winning solution.
