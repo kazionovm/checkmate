@@ -7,14 +7,17 @@ import traceback
 import base64
 from state import State
 
+import torch
+from train import Net
+
 class Valuator(object):
     def __init__(self):
-        import torch
-        from train import Net
-        vals = torch.load("nets/value.pth",
+        
+        vals = torch.load("nets/value_epoch16.pth",
                           map_location=lambda storage, loc: storage)
         self.model = Net()
         self.model.load_state_dict(vals)
+        self.count = 0
 
     def __call__(self, s):
         brd = s.serialize()[None]
@@ -79,7 +82,7 @@ class ClassicValuator(object):
 
 
 def computer_minimax(s, v, depth, a, b, big=False):
-    if depth >= 5 or s.board.is_game_over():
+    if depth >= 4 or s.board.is_game_over():
         return v(s)
 
     # white is maximizing player
@@ -99,8 +102,8 @@ def computer_minimax(s, v, depth, a, b, big=False):
         s.board.pop()
     move = sorted(isort, key=lambda x: x[0], reverse=s.board.turn)
 
-    # beam search beyond depth 3
-    if depth >= 3:
+    # beam search beyond depth 2
+    if depth >= 2:
         move = move[:10]
 
     for e in [x[1] for x in move]:
@@ -128,7 +131,10 @@ def computer_minimax(s, v, depth, a, b, big=False):
 def explore_leaves(s, v):
     ret = []
     start = time.time()
-    v.reset()
+    try:
+      v.reset()
+    except:
+      print('none')
     bval = v(s)
     cval, ret = computer_minimax(s, v, 0, a=-MAXVAL, b=MAXVAL, big=True)
     eta = time.time() - start

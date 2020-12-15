@@ -88,11 +88,9 @@ if __name__ == "__main__":
       data = data.float()
       target = target.float()
 
-      #print(data.shape, target.shape)
       optimizer.zero_grad()
       output = model(data)
-      #print(output.shape)
-
+    
       loss = floss(output, target)
       loss.backward()
       optimizer.step()
