@@ -132,9 +132,9 @@ def explore_leaves(s, v):
     ret = []
     start = time.time()
     try:
-      v.reset()
+        v.reset()
     except:
-      print('none')
+        print('none')
     bval = v(s)
     cval, ret = computer_minimax(s, v, 0, a=-MAXVAL, b=MAXVAL, big=True)
     eta = time.time() - start

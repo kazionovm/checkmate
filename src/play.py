@@ -18,7 +18,7 @@ def index():
 def computer_move(s, v):
     # computer move
     move = sorted(explore_leaves(s, v),
-                  key=lambda x: x[0], reverse=s.board.turn)
+                key=lambda x: x[0], reverse=s.board.turn)
     if len(move) == 0:
         return
     print("top 3:")
@@ -26,7 +26,6 @@ def computer_move(s, v):
         print("  ", m)
     print(s.board.turn, "moving", move[0][1])
     s.board.push(move[0][1])
-
 
 @app.route("/selfplay")
 def selfplay():
