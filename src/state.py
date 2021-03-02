@@ -1,6 +1,7 @@
 import chess
 import numpy as np
 
+
 class State(object):
     def __init__(self, board=None):
         if board is None:
@@ -9,7 +10,12 @@ class State(object):
             self.board = board
 
     def key(self):
-        return (self.board.board_fen(), self.board.turn, self.board.castling_rights, self.board.ep_square)
+        return (
+            self.board.board_fen(),
+            self.board.turn,
+            self.board.castling_rights,
+            self.board.ep_square,
+        )
 
     def serialize(self):
         assert self.board.is_valid()
@@ -19,8 +25,20 @@ class State(object):
             pp = self.board.piece_at(i)
 
             if pp is not None:
-                bstate[i] = {"P": 1, "N": 2, "B": 3, "R": 4, "Q": 5, "K": 6,
-                             "p": 9, "n": 10, "b": 11, "r": 12, "q": 13, "k": 14}[pp.symbol()]
+                bstate[i] = {
+                    "P": 1,
+                    "N": 2,
+                    "B": 3,
+                    "R": 4,
+                    "Q": 5,
+                    "K": 6,
+                    "p": 9,
+                    "n": 10,
+                    "b": 11,
+                    "r": 12,
+                    "q": 13,
+                    "k": 14,
+                }[pp.symbol()]
 
         if self.board.has_queenside_castling_rights(chess.WHITE):
             assert bstate[0] == 4
@@ -50,12 +68,13 @@ class State(object):
         state[3] = (bstate >> 0) & 1  # == (bstate//2^0)&1
 
         # 4th column is who's turn it is
-        state[4] = (self.board.turn*1.0)
+        state[4] = self.board.turn * 1.0
 
         return state
 
     def edges(self):
         return list(self.board.legal_moves)
+
 
 if __name__ == "__main__":
     s = State()

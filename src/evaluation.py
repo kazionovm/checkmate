@@ -1,20 +1,17 @@
 from __future__ import print_function
-import os
 import chess
 import time
 import chess.svg
-import traceback
-import base64
-from state import State
-
 import torch
 from train import Net
 
+
 class Valuator(object):
     def __init__(self):
-        
-        vals = torch.load("nets/value_epoch16.pth",
-                          map_location=lambda storage, loc: storage)
+
+        vals = torch.load(
+            "nets/value_epoch16.pth", map_location=lambda storage, loc: storage
+        )
         self.model = Net()
         self.model.load_state_dict(vals)
         self.count = 0
@@ -27,13 +24,16 @@ class Valuator(object):
 
 MAXVAL = 10000
 
+
 class ClassicValuator(object):
-    values = {chess.PAWN: 1,
-              chess.KNIGHT: 3,
-              chess.BISHOP: 3,
-              chess.ROOK: 5,
-              chess.QUEEN: 9,
-              chess.KING: 0}
+    values = {
+        chess.PAWN: 1,
+        chess.KNIGHT: 3,
+        chess.BISHOP: 3,
+        chess.ROOK: 5,
+        chess.QUEEN: 9,
+        chess.KING: 0,
+    }
 
     def __init__(self):
         self.reset()
@@ -52,7 +52,7 @@ class ClassicValuator(object):
 
     def value(self, s):
         b = s.board
-        
+
         if b.is_game_over():
             if b.result() == "1-0":
                 return MAXVAL
@@ -94,7 +94,6 @@ def computer_minimax(s, v, depth, a, b, big=False):
     if big:
         bret = []
 
-    
     isort = []
     for e in s.board.legal_moves:
         s.board.push(e)
@@ -108,7 +107,7 @@ def computer_minimax(s, v, depth, a, b, big=False):
 
     for e in [x[1] for x in move]:
         s.board.push(e)
-        tval = computer_minimax(s, v, depth+1, a, b)
+        tval = computer_minimax(s, v, depth + 1, a, b)
         s.board.pop()
         if big:
             bret.append((tval, e))
@@ -134,10 +133,12 @@ def explore_leaves(s, v):
     try:
         v.reset()
     except:
-        print('none')
+        print("none")
     bval = v(s)
     cval, ret = computer_minimax(s, v, 0, a=-MAXVAL, b=MAXVAL, big=True)
     eta = time.time() - start
-    print("%.2f -> %.2f: explored %d nodes in %.3f seconds %d/sec" %
-          (bval, cval, v.count, eta, int(v.count/eta)))
+    print(
+        "%.2f -> %.2f: explored %d nodes in %.3f seconds %d/sec"
+        % (bval, cval, v.count, eta, int(v.count / eta))
+    )
     return ret
